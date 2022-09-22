@@ -9,39 +9,39 @@ const createVoucher = {
 };
 
 describe("tests voucher", () => {
-    it("should create voucher", async () => {
-      const { code, discount } = createVoucher;
+  it("should create voucher", async () => {
+    const { code, discount } = createVoucher;
 
-      jest
-        .spyOn(voucherRepository, "getVoucherByCode")
-        .mockImplementationOnce((): any => {});
+    jest
+      .spyOn(voucherRepository, "getVoucherByCode")
+      .mockImplementationOnce((): any => {});
 
-      jest
-        .spyOn(voucherRepository, "createVoucher")
-        .mockImplementationOnce((): any => {});
+    jest
+      .spyOn(voucherRepository, "createVoucher")
+      .mockImplementationOnce((): any => {});
 
-      await voucherService.createVoucher(code, discount);
-      expect(voucherRepository.getVoucherByCode).toBeCalled();
-    });
+    await voucherService.createVoucher(code, discount);
+    expect(voucherRepository.getVoucherByCode).toBeCalled();
+  });
 
-    it("should not create duplicated voucher", async () => {
-      const { code, discount } = createVoucher;
+  it("should not create duplicated voucher", async () => {
+    const { code, discount } = createVoucher;
 
-      jest
-        .spyOn(voucherRepository, "getVoucherByCode")
-        .mockImplementationOnce((): any => {
-          return {
-            code,
-            discount,
-          };
-        });
-
-      const result = voucherService.createVoucher(code, discount);
-      expect(result).rejects.toEqual({
-        message: "Voucher already exist.",
-        type: "conflict",
+    jest
+      .spyOn(voucherRepository, "getVoucherByCode")
+      .mockImplementationOnce((): any => {
+        return {
+          code,
+          discount,
+        };
       });
+
+    const result = voucherService.createVoucher(code, discount);
+    expect(result).rejects.toEqual({
+      message: "Voucher already exist.",
+      type: "conflict",
     });
+  });
 
   it("should apply voucher", async () => {
     const { code, discount } = createVoucher;
@@ -67,9 +67,9 @@ describe("tests voucher", () => {
       .spyOn(voucherRepository, "useVoucher")
       .mockImplementationOnce((): any => {});
 
-    voucherService.applyVoucher(code, amount);
+    let response = await voucherService.applyVoucher(code, amount);
 
-    expect(voucherRepository.getVoucherByCode).toBeCalled();
+    expect(response.finalAmount).toBe(amount - amount * (discount / 100));
   });
 
   it("should not apply voucher if voucher doesn't exist", async () => {
@@ -78,15 +78,59 @@ describe("tests voucher", () => {
     jest
       .spyOn(voucherRepository, "getVoucherByCode")
       .mockImplementationOnce((): any => {
-        return 
-          undefined
-        ;
+        return;
+        undefined;
       });
 
     const amount = 500;
 
     const response = voucherService.applyVoucher(code, amount);
 
-    expect(response).rejects.toEqual({ message: "Voucher does not exist.", type: "conflict" });
+    expect(response).rejects.toEqual({
+      message: "Voucher does not exist.",
+      type: "conflict",
+    });
+  });
+
+  it("should not apply voucher if voucher is already used", async () => {
+    const { code, discount } = createVoucher;
+
+    jest
+      .spyOn(voucherRepository, "getVoucherByCode")
+      .mockImplementationOnce((): any => {
+        return {
+          id: 1,
+          code,
+          discount,
+          used: true,
+        };
+      });
+
+    const amount = 500;
+
+    const response = await voucherService.applyVoucher(code, amount);
+
+    expect(response.finalAmount).toBe(amount);
+  });
+
+  it("should not apply voucher if amount is smaller than 100", async () => {
+    const { code, discount } = createVoucher;
+
+    jest
+      .spyOn(voucherRepository, "getVoucherByCode")
+      .mockImplementationOnce((): any => {
+        return {
+          id: 1,
+          code,
+          discount,
+          used: true,
+        };
+      });
+
+    const amount = 99;
+
+    const response = await voucherService.applyVoucher(code, amount);
+
+    expect(response.finalAmount).toBe(amount);
   });
 });
