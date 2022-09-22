@@ -1,0 +1,23 @@
+{
+  "client": "Thunder Client",
+  "collectionName": "voucher",
+  "dateExported": "2022-07-26T12:33:12.705Z",
+  "version": "1.1",
+  "folders": [],
+  "requests": [
+    {
+      "_id": "7e041cf9-0082-46b0-87e1-95938d8ab387",
+      "colId": "fc62d13f-a3f7-411e-97dd-a21e3fd02c5a",
+      "containerId": "",
+      "name": "get discount",
+      "url": "{{dev}}/discount/250",
+      "method": "GET",
+      "sortNum": 10000,
+      "created": "2022-07-26T12:25:01.948Z",
+      "modified": "2022-07-26T12:30:52.789Z",
+      "headers": [],
+      "params": [],
+      "tests": []
+    }
+  ]
+}

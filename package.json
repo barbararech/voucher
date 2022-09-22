@@ -1,0 +1,41 @@
+{
+  "name": "voucher",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.ts",
+    "prisma:reset": "prisma migrate reset",
+    "prisma:migrate": "prisma migrate dev",
+    "test:unit": "dotenv -e .env.test jest -- -i --coverage --testPathPattern=tests/unit"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@faker-js/faker": "^7.3.0",
+    "@types/express": "^4.17.13",
+    "@types/jest": "^28.1.6",
+    "@types/node": "^18.6.1",
+    "@types/supertest": "^2.0.12",
+    "dotenv-cli": "^6.0.0",
+    "jest": "^28.1.3",
+    "nodemon": "^2.0.19",
+    "prisma": "^4.1.1",
+    "supertest": "^6.2.4",
+    "ts-jest": "^28.0.7",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.7.4"
+  },
+  "dependencies": {
+    "@prisma/client": "^4.1.1",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "express-async-error": "^0.0.2",
+    "express-async-errors": "^3.1.1",
+    "joi": "^17.6.0"
+  }
+}
